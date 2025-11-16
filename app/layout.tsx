@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   
   icons: {
     icon: [
-      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
-      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
+      { url: '/logo1.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo1.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo1.png', sizes: '512x512', type: 'image/png' },
     ],
-    apple: '/logo.png',
+    apple: '/logo1git add.png',
   }
 };
 
