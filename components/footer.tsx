@@ -91,9 +91,9 @@ export default function Footer() {
   href="https://www.linkedin.com/in/levtech-solutions-llp-9ba7aa388"
   target="_blank"
   rel="noopener noreferrer"
-  className="flex items-center gap-2 text-sm text-gray-400 hover:text-white mt-2"
+  className="flex items-center gap-2 text-sm hover:text-teal-400 mt-2" // <-- FIXED!
 >
-  <Linkedin size={18} className="text-teal-400" /> {/* <-- ADD THIS CLASS */}
+  <Linkedin size={18} className="text-teal-300" />
   <span>LinkedIn</span>
 </a>
             <p className="text-sm mt-4">Join our Skill Up Program today</p>
