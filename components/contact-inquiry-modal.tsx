@@ -171,7 +171,7 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
             disabled={isSubmitting}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg font-medium transition"
           >
-            {isSubmitting ? "Submitting..." : "Send Message"}
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </form>
       </div>
