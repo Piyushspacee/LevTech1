@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { supabase } from "@/lib/supabaseClient" // <-- 1. IMPORT SUPABASE
 
 interface ContactInquiryModalProps {
   isOpen: boolean
@@ -33,8 +33,29 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSuccessMessage("") // Clear previous messages
 
     try {
+      // --- 2. SEND DATA TO SUPABASE FIRST ---
+      const { error: supabaseError } = await supabase
+        .from("contacts") // Your table name
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,   // This now matches your table
+            subject: formData.subject, // This now matches your table
+            message: formData.message,
+          },
+        ])
+
+      if (supabaseError) {
+        // If Supabase fails, stop and show the error
+        throw new Error("Database Error: " + supabaseError.message)
+      }
+
+      // --- 3. SEND TO WHATSAPP (Your existing code) ---
+      // This only runs if Supabase was successful
       const response = await fetch("/api/send-contact-whatsapp", {
         method: "POST",
         headers: {
@@ -64,9 +85,14 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
           setSuccessMessage("")
           onClose()
         }, 2000)
+      } else {
+        // If WhatsApp fails (but Supabase worked)
+        throw new Error("Your inquiry was saved, but the WhatsApp message failed.")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error)
+      // Show any error in the success message box
+      setSuccessMessage(error.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -140,7 +166,7 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Message *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Message *</labe>
             <textarea
               name="message"
               value={formData.message}
@@ -152,8 +178,9 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
             />
           </div>
 
+          {/* This message area will now show success OR errors */}
           {successMessage && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-lg text-sm">
+            <div className={`border px-4 py-2 rounded-lg text-sm ${successMessage.startsWith("Error:") ? 'bg-red-50 border-red-200 text-red-700' : 'bg-green-50 border-green-200 text-green-700'}`}>
               {successMessage}
             </div>
           )}
