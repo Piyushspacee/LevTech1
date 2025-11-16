@@ -37,14 +37,15 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
 
     try {
       // --- 2. SEND DATA TO SUPABASE FIRST ---
+      // This will use the keys in your .env.local file
       const { error: supabaseError } = await supabase
-        .from("contacts") // Your table name
+        .from("contacts") // Your table name, ensure columns match formData
         .insert([
           {
             name: formData.name,
             email: formData.email,
-            phone: formData.phone,   // This now matches your table
-            subject: formData.subject, // This now matches your table
+            phone: formData.phone,
+            subject: formData.subject,
             message: formData.message,
           },
         ])
@@ -92,7 +93,7 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
     } catch (error: any) {
       console.error("Error:", error)
       // Show any error in the success message box
-      setSuccessMessage(error.message)
+      setSuccessMessage(`Error: ${error.message}`)
     } finally {
       setIsSubmitting(false)
     }
