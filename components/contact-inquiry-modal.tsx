@@ -166,7 +166,7 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Message *</labe>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Message *</label>
             <textarea
               name="message"
               value={formData.message}
