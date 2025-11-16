@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { supabase } from "@/lib/supabaseClient" // <-- 1. IMPORT SUPABASE
+import { supabase } from "@/lib/supabaseClient" // <-- Uses the client you created
 
 interface ContactInquiryModalProps {
   isOpen: boolean
@@ -36,10 +36,9 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
     setSuccessMessage("") // Clear previous messages
 
     try {
-      // --- 2. SEND DATA TO SUPABASE FIRST ---
-      // This will use the keys in your .env.local file
+      // --- SUBMIT DATA TO SUPABASE (Database) ---
       const { error: supabaseError } = await supabase
-        .from("contacts") // Your table name, ensure columns match formData
+        .from("contacts") // Ensure this matches your Supabase table name
         .insert([
           {
             name: formData.name,
@@ -51,48 +50,29 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
         ])
 
       if (supabaseError) {
-        // If Supabase fails, stop and show the error
-        throw new Error("Database Error: " + supabaseError.message)
+        // If Supabase fails, show the error
+        throw new Error("Error submitting inquiry to database. Check the Supabase policy.")
       }
 
-      // --- 3. SEND TO WHATSAPP (Your existing code) ---
-      // This only runs if Supabase was successful
-      const response = await fetch("/api/send-contact-whatsapp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      // --- SUCCESS HANDLING (Instant message) ---
+      setSuccessMessage("Your submission was successful! We will contact you soon.")
+      
+      // Reset form fields after 2 seconds
+      setTimeout(() => {
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        })
+        setSuccessMessage("")
+        onClose()
+      }, 2000)
 
-      if (response.ok) {
-        const data = await response.json()
-        setSuccessMessage("Message sent successfully! We'll contact you soon.")
-
-        // Open WhatsApp link
-        if (data.whatsappLink) {
-          window.open(data.whatsappLink, "_blank")
-        }
-
-        // Reset form after 2 seconds
-        setTimeout(() => {
-          setFormData({
-            name: "",
-            email: "",
-            phone: "",
-            subject: "",
-            message: "",
-          })
-          setSuccessMessage("")
-          onClose()
-        }, 2000)
-      } else {
-        // If WhatsApp fails (but Supabase worked)
-        throw new Error("Your inquiry was saved, but the WhatsApp message failed.")
-      }
     } catch (error: any) {
-      console.error("Error:", error)
-      // Show any error in the success message box
+      console.error("Submission Error:", error)
+      // Display the error message to the user
       setSuccessMessage(`Error: ${error.message}`)
     } finally {
       setIsSubmitting(false)
@@ -191,7 +171,7 @@ export default function ContactInquiryModal({ isOpen, onClose }: ContactInquiryM
             disabled={isSubmitting}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg font-medium transition"
           >
-            {isSubmitting ? "Sending..." : "Send Message"}
+            {isSubmitting ? "Submitting..." : "Send Message"}
           </Button>
         </form>
       </div>
