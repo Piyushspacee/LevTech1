@@ -24,16 +24,17 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-{/* Logo */}
-<Link href="/" className="flex items-center"> 
-  <Image
-    src="/logo1.png" // <-- This now matches your filename
-    alt="LevTech Solutions Logo"
-    width={160} // Adjust width
-    height={40} // Adjust height
-    priority
-  />
-</Link>
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo1.png"
+              alt="LevTech Solutions Logo"
+              width={160}
+              height={40}
+              priority
+            />
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
@@ -46,6 +47,17 @@ export default function Navbar() {
                 {item.label}
               </Link>
             ))}
+
+            {/* 🔹 New SkillUp Registration Button */}
+            <a
+              href="https://forms.gle/VijNkB1pkxyC8QdZ8"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="bg-teal-600 hover:bg-teal-700 text-white rounded-full px-5">
+                SkillUp Registration
+              </Button>
+            </a>
           </div>
 
           {/* CTA Button */}
@@ -58,7 +70,7 @@ export default function Navbar() {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle */}
           <button className="md:hidden p-2" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -77,6 +89,19 @@ export default function Navbar() {
                 {item.label}
               </Link>
             ))}
+
+            {/* 🔹 Mobile SkillUp Registration Button */}
+            <a
+              href="https://forms.gle/VijNkB1pkxyC8QdZ8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block mt-2"
+            >
+              <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white rounded-full">
+                SkillUp Registration
+              </Button>
+            </a>
+
             <Button
               onClick={() => {
                 setIsContactOpen(true)
